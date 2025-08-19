@@ -30,25 +30,35 @@ function(SmartHouseAddDependency git_url git_tag)
 
     get_filename_component(repo_filename "${git_url}" NAME)
 
+    # Decide which tag/branch to use, or none
+    set(_tag_to_use "")
     if(git_tag)
         set(_tag_to_use "${git_tag}")
     elseif(DEFINED SMARTHOUSE_GIT_TAG)
         set(_tag_to_use "${SMARTHOUSE_GIT_TAG}")
-    else()
-        message(FATAL_ERROR "No git_tag provided and no default (SMARTHOUSE_GIT_TAG) set.")
     endif()
 
-    FetchContent_Declare(
-        ${repo_filename}
-        GIT_REPOSITORY ${git_url}
-        GIT_TAG        ${_tag_to_use}
-        GIT_SHALLOW    TRUE
-        GIT_PROGRESS   TRUE
-    )
+    # Declare fetch content with or without GIT_TAG
+    if(_tag_to_use)
+        FetchContent_Declare(
+            ${repo_filename}
+            GIT_REPOSITORY ${git_url}
+            GIT_TAG        ${_tag_to_use}
+            GIT_SHALLOW    TRUE
+            GIT_PROGRESS   TRUE
+        )
+    else()
+        message(STATUS "No git_tag provided, using repository's default branch for ${repo_filename}")
+        FetchContent_Declare(
+            ${repo_filename}
+            GIT_REPOSITORY ${git_url}
+            GIT_SHALLOW    TRUE
+            GIT_PROGRESS   TRUE
+        )
+    endif()
 
     FetchContent_MakeAvailable(${repo_filename})
 endfunction()
-
 
 function (SmartHouseInitModule)
 	# Enable Hot Reload for MSVC compilers if supported.
