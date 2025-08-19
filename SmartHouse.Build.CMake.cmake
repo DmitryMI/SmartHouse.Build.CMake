@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.25)
 include(FetchContent)
 
 if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-	set(SMARTHOUSE_GIT_TAG "main" CACHE STRING "Git tag to be used for SmartHouse modules.")
+	set(SMARTHOUSE_GIT_TAG "" CACHE STRING "Git tag to be used for SmartHouse modules.")
 
 	if(WIN32)
 		add_compile_definitions(SMARTHOUSE_WIN32)
